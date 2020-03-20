@@ -46,17 +46,18 @@ namespace WishList.Controllers
             {
                ModelState.AddModelError("string.Empty", "Invalid login attempt.");
             }         
-            return RedirectToAction("Index", "Item");
+            return RedirectToAction("Index", "Login");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Logout(LoginViewModel loginModel)
+        public IActionResult Logout()
         {
             _signInManager.SignOutAsync();
 
             return RedirectToAction("Index", "Home");
         }
+
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Register()
