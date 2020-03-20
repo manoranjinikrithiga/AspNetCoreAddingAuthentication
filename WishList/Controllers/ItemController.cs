@@ -22,8 +22,8 @@ namespace WishList.Controllers
 
         public IActionResult Index()
         {
-            ApplicationUser loggedInUser = _userManager.GetUserAsync(HttpContext.User);
-            var model = _context.Items.ToList().Where(s => s.User == loggedInUser);
+            var loggedInUser = _userManager.GetUserAsync(HttpContext.User);
+            var model = _context.Items.ToList().Where(s => s.User == (ApplicationUser)loggedInUser);
 
             return View("Index", model);
         }
@@ -46,9 +46,9 @@ namespace WishList.Controllers
 
         public IActionResult Delete(int id)
         {
-            ApplicationUser loggedInUser = _userManager.GetUserAsync(HttpContext.User);
+            var loggedInUser = _userManager.GetUserAsync(HttpContext.User);
             var item = _context.Items.FirstOrDefault(e => e.Id == id);
-            if (item.User == loggedInUser)
+            if (item.User == (ApplicationUser)loggedInUser)
             {
                 _context.Items.Remove(item);
                 _context.SaveChanges();
