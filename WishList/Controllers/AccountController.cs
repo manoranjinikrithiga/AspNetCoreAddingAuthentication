@@ -55,7 +55,7 @@ namespace WishList.Controllers
                     }
                     return View(regModel);
             }
-                return RedirectToAction("Index", "HomeController");                       
+                return RedirectToAction("Index", "Home");                       
         }
     }
 }
