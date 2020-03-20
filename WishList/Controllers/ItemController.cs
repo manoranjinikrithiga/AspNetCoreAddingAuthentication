@@ -21,10 +21,10 @@ namespace WishList.Controllers
         }
 
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            ApplicationUser loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
-            var model = _context.Items.ToList().Where(s => s.User == loggedInUser);
+            var loggedInUser =  _userManager.GetUserAsync(HttpContext.User).Result;
+            var model = _context.Items.ToList().Where(s => s.User.Id == loggedInUser.Id);
 
             return View("Index", model);
         }
@@ -36,18 +36,18 @@ namespace WishList.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Models.Item item)
+        public  IActionResult Create(Models.Item item)
         {
-            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
             item.User = loggedInUser;
             _context.Items.Add(item);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public async Task<IActionResult> Delete(int id)
+        public IActionResult Delete(int id)
         {
-            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var loggedInUser = _userManager.GetUserAsync(HttpContext.User).Result;
             var item = _context.Items.FirstOrDefault(e => e.Id == id);
             if (item.User == loggedInUser)
             {
