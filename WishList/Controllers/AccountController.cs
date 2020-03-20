@@ -39,11 +39,8 @@ namespace WishList.Controllers
         public IActionResult Register(RegisterViewModel regModel)
         {
             if (!ModelState.IsValid)
-            {
                 return View(regModel);
-            }
-            else
-            {
+          
                 var user = new ApplicationUser()
                 {
                     UserName = regModel.Email,
@@ -54,12 +51,11 @@ namespace WishList.Controllers
                 {
                     foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError("Password", error.Description);
-                        return View(regModel);
+                        ModelState.AddModelError("Password", error.Description);                        
                     }
-                }
-                return RedirectToAction("Index", "HomeController");
-            }           
+                    return View(regModel);
+            }
+                return RedirectToAction("Index", "HomeController");                       
         }
     }
 }
