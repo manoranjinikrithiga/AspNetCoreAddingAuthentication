@@ -4,6 +4,7 @@ using WishList.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using WishList.Models;
+using System.Threading.Tasks;
 
 namespace WishList.Controllers
 {
@@ -20,10 +21,10 @@ namespace WishList.Controllers
         }
 
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User);
-            var model = _context.Items.ToList().Where(s => s.User == (ApplicationUser)loggedInUser);
+            ApplicationUser loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
+            var model = _context.Items.ToList().Where(s => s.User == loggedInUser);
 
             return View("Index", model);
         }
@@ -35,20 +36,20 @@ namespace WishList.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(Models.Item item)
+        public async Task<IActionResult> Create(Models.Item item)
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User);
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             item.User = loggedInUser;
             _context.Items.Add(item);
             _context.SaveChanges();
             return RedirectToAction("Index");
         }
 
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var loggedInUser = _userManager.GetUserAsync(HttpContext.User);
+            var loggedInUser = await _userManager.GetUserAsync(HttpContext.User);
             var item = _context.Items.FirstOrDefault(e => e.Id == id);
-            if (item.User == (ApplicationUser)loggedInUser)
+            if (item.User == loggedInUser)
             {
                 _context.Items.Remove(item);
                 _context.SaveChanges();
