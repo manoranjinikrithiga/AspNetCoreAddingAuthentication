@@ -42,22 +42,24 @@ namespace WishList.Controllers
             {
                 return View(regModel);
             }
-            var user = new ApplicationUser()
+            else
             {
-                UserName = regModel.Email,
-                Email = regModel.Email
-            };
-            var result = _userManager.CreateAsync(user, regModel.Password).Result;
-            if(!result.Succeeded)
-            {
-                foreach(var error in result.Errors)
+                var user = new ApplicationUser()
                 {
-                    ModelState.AddModelError("Password", error.Description);
-                    return View(regModel);
+                    UserName = regModel.Email,
+                    Email = regModel.Email
+                };
+                var result = _userManager.CreateAsync(user, regModel.Password).Result;
+                if (!result.Succeeded)
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("Password", error.Description);
+                        return View(regModel);
+                    }
                 }
-            }
-           
-            return RedirectToAction("~/HomeController/Index");
+                return RedirectToAction("Index", "HomeController");
+            }           
         }
     }
 }
