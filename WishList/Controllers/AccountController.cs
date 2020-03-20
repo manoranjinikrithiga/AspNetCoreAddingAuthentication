@@ -29,11 +29,41 @@ namespace WishList.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register()
+        public IActionResult Login()
         {
             return View();
         }
 
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(LoginViewModel loginModel)
+        {
+            if (!ModelState.IsValid)
+                return View(loginModel);
+            var result = _signInManager.PasswordSignInAsync(loginModel.Email, loginModel.Password, false,false);
+            if (!result.Result.Succeeded)
+            {
+               ModelState.AddModelError("string.Empty", "Invalid login attempt.");
+            }         
+            return RedirectToAction("Index", "Item");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Logout(LoginViewModel loginModel)
+        {
+            _signInManager.SignOutAsync();
+
+            return RedirectToAction("Index", "Home");
+        }
+        [HttpGet]
+        [AllowAnonymous]
+        public IActionResult Register()
+        {
+            return View();
+        }
+               
         [HttpPost]
         [AllowAnonymous]
         public IActionResult Register(RegisterViewModel regModel)
@@ -51,10 +81,10 @@ namespace WishList.Controllers
                 {
                     foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError("Password", error.Description);                        
+                        ModelState.AddModelError("Password", error.Description);
                     }
                     return View(regModel);
-            }
+                }
                 return RedirectToAction("Index", "Home");                       
         }
     }
